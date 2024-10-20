@@ -70,7 +70,8 @@ def handle_dot_product():
         vec1 = np.array(data['vector1'])
         vec2 = np.array(data['vector2'])
         dot_product = np.dot(vec1, vec2)
-        response = {'dot_product': dot_product}
+        # Return only the numeric result
+        response = {'dot_product': dot_product.item()}  # Use .item() to get a scalar value
     except:
         response = {'dot_product': 0}
     response_pickled = jsonpickle.encode(response)

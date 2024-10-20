@@ -60,6 +60,7 @@ elif endpoint == 'jsonimg':
     print(f"Average time for jsonimg: {total_time}")
 
 # Dot product endpoint
+# Dot product endpoint
 elif endpoint == 'dotproduct':
     vectors = {
         'vector1': [1, 2, 3],
@@ -68,6 +69,8 @@ elif endpoint == 'dotproduct':
     start_time = perf_counter()
     for _ in range(num_tests):
         resp = requests.post(dotproduct_url, data=json.dumps(vectors), headers=headers)
-        print(resp.text)
+        # Assuming the response contains a dot product result in the format you provided
+        result = resp.json().get('dot_product', None)
+        print(f"Dot product result: {result}")
     total_time = (perf_counter() - start_time) / num_tests
     print(f"Average time for dotproduct: {total_time}")
