@@ -60,10 +60,10 @@ elif endpoint == 'rawimg':
 # JSON image call
 elif endpoint == 'jsonimg':
     stub = sum_pb2_grpc.jsonimgStub(channel)
-    image_data = list(img)  # Changed to a list of bytes
+    # Pass the image data as bytes directly
     timer1_start = perf_counter()
     for i in range(num_tests):
-        number = sum_pb2.jsonimgMsg(image_data=image_data)
+        number = sum_pb2.jsonimgMsg(image_data=img)  # Use img directly as bytes
         resp = stub.jsonimg(number)
         print(resp.json_image_size)
     timer1_stop = perf_counter()
