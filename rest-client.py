@@ -60,7 +60,6 @@ elif endpoint == 'jsonimg':
     print(f"Average time for jsonimg: {total_time}")
 
 # Dot product endpoint
-# Dot product endpoint
 elif endpoint == 'dotproduct':
     vectors = {
         'vector1': [1, 2, 3],

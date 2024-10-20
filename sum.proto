@@ -1,19 +1,33 @@
 syntax ="proto3";
 
-service add{
-    rpc add(addMsg) returns(addMsg){}
+message rawImageMsg {
+    bytes img = 1;
+    int32 image_size = 2;
 }
 
-service image{
-     rpc image(imageMsg) returns(addMsg){}
+message jsonImageMsg {
+    bytes img = 1;
+    int32 json_image_size = 2;
 }
 
-
-
-message addMsg {
-  int32 a = 1;
-  int32 b = 2;
+message dotProductMsg {
+    repeated int32 vector1 = 1;
+    repeated int32 vector2 = 2;
+    int32 dot_product = 3;
 }
+
+service rawImage {
+    rpc rawimg(rawImageMsg) returns (rawImageMsg);
+}
+
+service jsonImage {
+    rpc jsonimg(jsonImageMsg) returns (jsonImageMsg);
+}
+
+service dotProduct {
+    rpc dotproduct(dotProductMsg) returns (dotProductMsg);
+}
+
 
 
 message imageMsg{
