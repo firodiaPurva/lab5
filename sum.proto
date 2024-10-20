@@ -1,36 +1,58 @@
-syntax ="proto3";
+syntax = "proto3";
 
-message rawImageMsg {
-    bytes img = 1;
-    int32 image_size = 2;
+package sum;
+
+// The add service
+service add {
+    rpc add(addMsg) returns (addMsg);
 }
 
-message jsonImageMsg {
-    bytes img = 1;
-    int32 json_image_size = 2;
+// The image service
+service image {
+    rpc image(imageMsg) returns (addMsg);
 }
 
-message dotProductMsg {
+// The raw image service
+service rawimg {
+    rpc rawimg(rawimgMsg) returns (rawimgMsg);
+}
+
+// The JSON image service
+service jsonimg {
+    rpc jsonimg(jsonimgMsg) returns (jsonimgMsg);
+}
+
+// The dot product service
+service dotproduct {
+    rpc dotproduct(dotproductMsg) returns (dotproductMsg);
+}
+
+// Message for adding two numbers
+message addMsg {
+    int32 a = 1;
+    int32 b = 2;
+}
+
+// Message for image data
+message imageMsg {
+    bytes img = 1;
+}
+
+// Message for raw image data
+message rawimgMsg {
+    bytes img = 1;
+    int32 image_size = 2; // Output field
+}
+
+// Message for JSON image data
+message jsonimgMsg {
+    repeated uint8 image_data = 1; // Change this to bytes if needed
+    int32 json_image_size = 2; // Output field
+}
+
+// Message for dot product
+message dotproductMsg {
     repeated int32 vector1 = 1;
     repeated int32 vector2 = 2;
-    int32 dot_product = 3;
+    int32 dot_product = 3; // Output field
 }
-
-service rawImage {
-    rpc rawimg(rawImageMsg) returns (rawImageMsg);
-}
-
-service jsonImage {
-    rpc jsonimg(jsonImageMsg) returns (jsonImageMsg);
-}
-
-service dotProduct {
-    rpc dotproduct(dotProductMsg) returns (dotProductMsg);
-}
-
-
-
-message imageMsg{
-   bytes img=1;
-}
-
