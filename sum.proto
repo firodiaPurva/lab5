@@ -46,7 +46,7 @@ message rawimgMsg {
 
 // Message for JSON image data
 message jsonimgMsg {
-    repeated uint8 image_data = 1; // Change this to bytes if needed
+    bytes image_data = 1; // Changed to bytes
     int32 json_image_size = 2; // Output field
 }
 
