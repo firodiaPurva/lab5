@@ -56,6 +56,7 @@ sum_pb2_grpc.add_dotproductServicer_to_server(dotproductServicer(), server)
 
 print('Starting server. Listening on port 50051.')
 server.add_insecure_port('0.0.0.0:50051')
+server.add_insecure_port('[::]:50051')
 server.start()
 
 # since server.start() will not block,
