@@ -1,14 +1,12 @@
 #!/usr/bin/env python3
-from __future__ import print_function
 import requests
+import json
 import sys
 from time import perf_counter
 
-# Parse command line arguments to indicate the endpoint and iterations to test
 addr = sys.argv[1]
 endpoint = sys.argv[2]
 num_tests = int(sys.argv[3])
-print(addr, endpoint, num_tests)
 
 # Prepare headers for different HTTP requests
 headers = {'content-type': 'image/png'}
@@ -24,59 +22,57 @@ rawimg_url = 'http://' + addr + '/api/rawimg'
 jsonimg_url = 'http://' + addr + '/api/jsonimg'
 dotproduct_url = 'http://' + addr + '/api/dotproduct'
 
-# Perform the tests based on the selected endpoint
+# Add endpoint
 if endpoint == 'add':
-    start_t1 = perf_counter()
-    for i in range(num_tests):
-        resp = requests.get(add_url, headers=headers_add)
-        print("Response is", resp.text)
-    stop_t1 = perf_counter()
-    total = stop_t1 - start_t1
-    avg = total / num_tests
-    print("The average time taken for the /api/add endpoint was {}".format(avg))
+    add_url = addr + '/api/add/5/2'
+    start_time = perf_counter()
+    for _ in range(num_tests):
+        resp = requests.get(add_url)
+        print(resp.text)
+    total_time = (perf_counter() - start_time) / num_tests
+    print(f"Average time for add: {total_time}")
 
+# Image endpoint
 elif endpoint == 'image':
-    start_t2 = perf_counter()
-    for i in range(num_tests):
-        resp = requests.post(image_url, data=img, headers=headers)
-        print("Response is", resp)
-    stop_t2 = perf_counter()
-    total = stop_t2 - start_t2
-    avg = total / num_tests
-    print("The average time taken for the /api/image endpoint was {}".format(avg))
+    image_url = addr + '/api/image'
+    start_time = perf_counter()
+    for _ in range(num_tests):
+        resp = requests.post(image_url, data=img)
+        print(resp.text)
+    total_time = (perf_counter() - start_time) / num_tests
+    print(f"Average time for image: {total_time}")
 
+# Raw image endpoint
 elif endpoint == 'rawimg':
-    # Use POST for rawimg
-    start_t3 = perf_counter()
-    for i in range(num_tests):
-        resp = requests.post(rawimg_url, data=img, headers=headers)
-        print("Response is", resp)
-    stop_t3 = perf_counter()
-    total = stop_t3 - start_t3
-    avg = total / num_tests
-    print("The average time taken for the /api/rawimg endpoint was {}".format(avg))
+    rawimg_url = addr + '/api/rawimg'
+    start_time = perf_counter()
+    for _ in range(num_tests):
+        resp = requests.post(rawimg_url, data=img)
+        print(resp.text)
+    total_time = (perf_counter() - start_time) / num_tests
+    print(f"Average time for rawimg: {total_time}")
 
+# JSON image endpoint
 elif endpoint == 'jsonimg':
-    # Use POST for jsonimg
-    start_t4 = perf_counter()
-    for i in range(num_tests):
-        resp = requests.post(jsonimg_url, data=img, headers=headers)
-        print("Response is", resp)
-    stop_t4 = perf_counter()
-    total = stop_t4 - start_t4
-    avg = total / num_tests
-    print("The average time taken for the /api/jsonimg endpoint was {}".format(avg))
+    jsonimg_url = addr + '/api/jsonimg'
+    image_data = {'image_data': list(img)}
+    start_time = perf_counter()
+    for _ in range(num_tests):
+        resp = requests.post(jsonimg_url, data=json.dumps(image_data), headers=headers)
+        print(resp.text)
+    total_time = (perf_counter() - start_time) / num_tests
+    print(f"Average time for jsonimg: {total_time}")
 
+# Dot product endpoint
 elif endpoint == 'dotproduct':
-    # Use POST for dotproduct
-    start_t5 = perf_counter()
-    for i in range(num_tests):
-        resp = requests.post(dotproduct_url, headers=headers_add)
-        print("Response is", resp.text)
-    stop_t5 = perf_counter()
-    total = stop_t5 - start_t5
-    avg = total / num_tests
-    print("The average time taken for the /api/dotproduct endpoint was {}".format(avg))
-
-else:
-    print("Invalid endpoint. Use 'add', 'image', 'rawimg', 'jsonimg', or 'dotproduct'.")
+    dotprod_url = addr + '/api/dotproduct'
+    vectors = {
+        'vector1': [1, 2, 3],
+        'vector2': [4, 5, 6]
+    }
+    start_time = perf_counter()
+    for _ in range(num_tests):
+        resp = requests.post(dotprod_url, data=json.dumps(vectors), headers=headers)
+        print(resp.text)
+    total_time = (perf_counter() - start_time) / num_tests
+    print(f"Average time for dotproduct: {total_time}")
