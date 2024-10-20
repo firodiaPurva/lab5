@@ -24,7 +24,6 @@ dotproduct_url = 'http://' + addr + '/api/dotproduct'
 
 # Add endpoint
 if endpoint == 'add':
-    add_url = addr + '/api/add/5/2'
     start_time = perf_counter()
     for _ in range(num_tests):
         resp = requests.get(add_url)
@@ -34,7 +33,6 @@ if endpoint == 'add':
 
 # Image endpoint
 elif endpoint == 'image':
-    image_url = addr + '/api/image'
     start_time = perf_counter()
     for _ in range(num_tests):
         resp = requests.post(image_url, data=img)
@@ -44,7 +42,6 @@ elif endpoint == 'image':
 
 # Raw image endpoint
 elif endpoint == 'rawimg':
-    rawimg_url = addr + '/api/rawimg'
     start_time = perf_counter()
     for _ in range(num_tests):
         resp = requests.post(rawimg_url, data=img)
@@ -54,7 +51,6 @@ elif endpoint == 'rawimg':
 
 # JSON image endpoint
 elif endpoint == 'jsonimg':
-    jsonimg_url = addr + '/api/jsonimg'
     image_data = {'image_data': list(img)}
     start_time = perf_counter()
     for _ in range(num_tests):
@@ -65,14 +61,13 @@ elif endpoint == 'jsonimg':
 
 # Dot product endpoint
 elif endpoint == 'dotproduct':
-    dotprod_url = addr + '/api/dotproduct'
     vectors = {
         'vector1': [1, 2, 3],
         'vector2': [4, 5, 6]
     }
     start_time = perf_counter()
     for _ in range(num_tests):
-        resp = requests.post(dotprod_url, data=json.dumps(vectors), headers=headers)
+        resp = requests.post(dotproduct_url, data=json.dumps(vectors), headers=headers)
         print(resp.text)
     total_time = (perf_counter() - start_time) / num_tests
     print(f"Average time for dotproduct: {total_time}")
