@@ -2,9 +2,8 @@ import grpc
 # import the generated classes
 import sum_pb2
 import sum_pb2_grpc
-import struct
-import sys
 from time import perf_counter
+import sys
 
 # Via CLI we pass in the address to the gRPC server including the port(50051)
 addr = sys.argv[1]
@@ -61,7 +60,7 @@ elif endpoint == 'rawimg':
 # JSON image call
 elif endpoint == 'jsonimg':
     stub = sum_pb2_grpc.jsonimgStub(channel)
-    image_data = {'image_data': list(img)}
+    image_data = list(img)  # Changed to a list of bytes
     timer1_start = perf_counter()
     for i in range(num_tests):
         number = sum_pb2.jsonimgMsg(image_data=image_data)
