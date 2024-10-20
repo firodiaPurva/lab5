@@ -1,8 +1,5 @@
 import grpc
-import json
-import numpy as np
-
-# Import the generated classes
+# import the generated classes
 import sum_pb2
 import sum_pb2_grpc
 import struct
@@ -15,10 +12,10 @@ endpoint = sys.argv[2]
 num_tests = int(sys.argv[3])
 img = open('Flatirons_Winter_Sunrise_edit_2.jpg', 'rb').read()
 
-# Open a gRPC channel
+# open a gRPC channel
 channel = grpc.insecure_channel(addr)
 
-# Add call
+# add call
 if endpoint == 'add':
     stub = sum_pb2_grpc.addStub(channel)
 
@@ -33,7 +30,7 @@ if endpoint == 'add':
     avg = total / num_tests
     print(avg)
 
-# Image call
+# image call
 elif endpoint == 'image':
     stub = sum_pb2_grpc.imageStub(channel)
     timer1_start = perf_counter()
@@ -47,12 +44,12 @@ elif endpoint == 'image':
     avg = total / num_tests
     print(avg)
 
-# Raw image call
+# raw image call
 elif endpoint == 'rawimg':
-    stub = sum_pb2_grpc.rawImageStub(channel)
+    stub = sum_pb2_grpc.rawimgStub(channel)
     timer1_start = perf_counter()
     for i in range(num_tests):
-        number = sum_pb2.rawImageMsg(img=img)
+        number = sum_pb2.rawimgMsg(img=img)
         resp = stub.rawimg(number)
         print(resp.image_size)
     timer1_stop = perf_counter()
@@ -63,12 +60,11 @@ elif endpoint == 'rawimg':
 
 # JSON image call
 elif endpoint == 'jsonimg':
-    stub = sum_pb2_grpc.jsonImageStub(channel)
-    img_array = list(np.frombuffer(img, dtype=np.uint8))
-    image_data = {'image_data': img_array}
+    stub = sum_pb2_grpc.jsonimgStub(channel)
+    image_data = {'image_data': list(img)}
     timer1_start = perf_counter()
     for i in range(num_tests):
-        number = sum_pb2.jsonImageMsg(img=json.dumps(image_data).encode('utf-8'))
+        number = sum_pb2.jsonimgMsg(image_data=image_data)
         resp = stub.jsonimg(number)
         print(resp.json_image_size)
     timer1_stop = perf_counter()
@@ -77,16 +73,16 @@ elif endpoint == 'jsonimg':
     avg = total / num_tests
     print(avg)
 
-# Dot product call
+# dot product call
 elif endpoint == 'dotproduct':
-    stub = sum_pb2_grpc.dotProductStub(channel)
+    stub = sum_pb2_grpc.dotproductStub(channel)
     vectors = {
         'vector1': [1, 2, 3],
         'vector2': [4, 5, 6]
     }
     timer1_start = perf_counter()
     for i in range(num_tests):
-        number = sum_pb2.dotProductMsg(vector1=vectors['vector1'], vector2=vectors['vector2'])
+        number = sum_pb2.dotproductMsg(vector1=vectors['vector1'], vector2=vectors['vector2'])
         resp = stub.dotproduct(number)
         print(resp.dot_product)
     timer1_stop = perf_counter()

@@ -3,10 +3,8 @@ from concurrent import futures
 import time
 from PIL import Image
 import io
-import json
-import numpy as np
 
-# Import the generated classes
+# import the generated classes
 import sum_pb2
 import sum_pb2_grpc
 
@@ -25,49 +23,42 @@ class imageServicer(sum_pb2_grpc.imageServicer):
         response.b = i.size[1]
         return response
 
-class rawImageServicer(sum_pb2_grpc.rawImageServicer):
+class rawimgServicer(sum_pb2_grpc.rawimgServicer):
     def rawimg(self, request, context):
-        response = sum_pb2.rawImageMsg()
-        img_data = np.frombuffer(request.img, dtype=np.uint8)
-        response.image_size = len(img_data)
+        response = sum_pb2.rawimgMsg()
+        img_data = io.BytesIO(request.img)
+        response.image_size = len(img_data.getvalue())
         return response
 
-class jsonImageServicer(sum_pb2_grpc.jsonImageServicer):
+class jsonimgServicer(sum_pb2_grpc.jsonimgServicer):
     def jsonimg(self, request, context):
-        response = sum_pb2.jsonImageMsg()
-        json_data = json.loads(request.img.decode('utf-8'))
-        img_array = np.array(json_data['image_data'], dtype=np.uint8)
-        response.json_image_size = img_array.size
+        response = sum_pb2.jsonimgMsg()
+        img_array = request.image_data
+        response.json_image_size = len(img_array)
         return response
 
-class dotProductServicer(sum_pb2_grpc.dotProductServicer):
+class dotproductServicer(sum_pb2_grpc.dotproductServicer):
     def dotproduct(self, request, context):
-        response = sum_pb2.dotProductMsg()
-        vec1 = np.array(request.vector1)
-        vec2 = np.array(request.vector2)
-        dot_product = np.dot(vec1, vec2)
-        response.dot_product = dot_product
+        response = sum_pb2.dotproductMsg()
+        vec1 = request.vector1
+        vec2 = request.vector2
+        response.dot_product = sum(x * y for x, y in zip(vec1, vec2))
         return response
 
-# Create a gRPC server
+# create a gRPC server
 server = grpc.server(futures.ThreadPoolExecutor(max_workers=10))
 
-sum_pb2_grpc.add_addServicer_to_server(
-    addServicer(), server)
-sum_pb2_grpc.add_imageServicer_to_server(
-    imageServicer(), server)
-sum_pb2_grpc.add_rawImageServicer_to_server(
-    rawImageServicer(), server)
-sum_pb2_grpc.add_jsonImageServicer_to_server(
-    jsonImageServicer(), server)
-sum_pb2_grpc.add_dotProductServicer_to_server(
-    dotProductServicer(), server)
+sum_pb2_grpc.add_addServicer_to_server(addServicer(), server)
+sum_pb2_grpc.add_imageServicer_to_server(imageServicer(), server)
+sum_pb2_grpc.add_rawimgServicer_to_server(rawimgServicer(), server)
+sum_pb2_grpc.add_jsonimgServicer_to_server(jsonimgServicer(), server)
+sum_pb2_grpc.add_dotproductServicer_to_server(dotproductServicer(), server)
 
 print('Starting server. Listening on port 50051.')
 server.add_insecure_port('[::]:50051')
 server.start()
 
-# Since server.start() will not block,
+# since server.start() will not block,
 # a sleep-loop is added to keep alive
 try:
     while True:
